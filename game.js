@@ -2,13 +2,21 @@ const SNAKE_SPEED = 5;
 let gameOver = false;
 const gameBoard = document.getElementById('game-board');
 
+// 在文件开头添加初始状态常量
+const INITIAL_SNAKE_BODY = [
+  { x: 11, y: 11 },
+  { x: 11, y: 10 },
+  { x: 11, y: 9 },
+];
+
 const main = () => {
   update();
   draw();
-  // TODO 4.3, 4.4: Add Game Over Alert, and clear interval!
   if(gameOver){
-    alert("Game Over!!");
     clearInterval(gameloop);
+    if(confirm("游戏结束！是否重新开始？")) {
+      resetGame();
+    }
   }
 };
 
@@ -34,3 +42,16 @@ const draw = () => {
 const checkGameOver = () =>{
   return snakeOutOfBounds() || snakeIntersectSelf();
 }
+
+// 添加重置游戏的函数
+const resetGame = () => {
+  gameOver = false;
+  inputDirection = { x: 0, y: 1 }; // 重置蛇的移动方向
+  // 重置蛇的身体
+  snakeBody.length = 0;
+  INITIAL_SNAKE_BODY.forEach(segment => snakeBody.push({...segment}));
+  // 重置食物位置
+  food = getNewFoodPosition();
+  // 重新开始游戏循环
+  gameloop = setInterval(main, 1000 / SNAKE_SPEED);
+};
